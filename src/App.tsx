@@ -67,6 +67,8 @@ export default function App() {
       instagramUrl: 'https://instagram.com/capoeirawien',
       bgUrl: 'https://picsum.photos/seed/vibrant/1920/1080?blur=4',
       bgType: 'image',
+      bodyImageUrl: 'https://picsum.photos/seed/capoeira/1200/600',
+      historyImageUrl: 'https://picsum.photos/seed/history/800/400',
       urgentBanner: {
         text: 'Training heute entfällt wegen Feiertag!',
         active: false,
@@ -271,38 +273,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Urgent Banner Settings */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold flex items-center gap-2">
-                  <AlertCircle size={20} className="text-red-500" /> Urgent News Banner
-                </h3>
-                <div className="glass-card p-6 rounded-3xl space-y-4 border-2 border-red-500/20">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input 
-                      type="text" 
-                      value={settings.urgentBanner?.text}
-                      onChange={(e) => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, text: e.target.value } })}
-                      className="md:col-span-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-red-500"
-                      placeholder="Urgent message (e.g. Training Cancelled)"
-                    />
-                    <div className="flex items-center gap-2">
-                      <input 
-                        type="color" 
-                        value={settings.urgentBanner?.color}
-                        onChange={(e) => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, color: e.target.value } })}
-                        className="w-10 h-10 rounded-lg overflow-hidden bg-transparent border-none cursor-pointer"
-                      />
-                      <button 
-                        onClick={() => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, active: !settings.urgentBanner?.active } })}
-                        className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors ${settings.urgentBanner?.active ? 'bg-red-500 text-white' : 'bg-white/10 text-white/40'}`}
-                      >
-                        {settings.urgentBanner?.active ? 'Active' : 'Inactive'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               {/* Promo Settings */}
               <div className="space-y-4">
                 <h3 className="text-xl font-bold flex items-center gap-2">
@@ -384,7 +354,7 @@ export default function App() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/40">Background URL (Image/Video)</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/40">Background URL (Hero)</label>
                       <input 
                         type="text" 
                         value={settings.bgUrl}
@@ -394,7 +364,7 @@ export default function App() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-white/40">Background Type</label>
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/40">Hero Background Type</label>
                       <div className="flex bg-white/5 rounded-xl p-1">
                         <button 
                           onClick={() => setSettings({ ...settings, bgType: 'image' })}
@@ -409,6 +379,29 @@ export default function App() {
                           Video
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/40">Body Section Image URL</label>
+                      <input 
+                        type="text" 
+                        value={settings.bodyImageUrl}
+                        onChange={(e) => setSettings({ ...settings, bodyImageUrl: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                        placeholder="https://..."
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-white/40">History Section Image URL</label>
+                      <input 
+                        type="text" 
+                        value={settings.historyImageUrl}
+                        onChange={(e) => setSettings({ ...settings, historyImageUrl: e.target.value })}
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                        placeholder="https://..."
+                      />
                     </div>
                   </div>
 
@@ -432,147 +425,6 @@ export default function App() {
                       />
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Training Management */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold flex items-center gap-2">
-                    <Footprints size={20} className="text-brand-primary" /> Training Schedule
-                  </h3>
-                  <button 
-                    onClick={() => setTrainings([{ id: Date.now().toString(), name: 'New Training', day: 'Montag', time: '18:00 - 20:00', location: 'Kröllgasse', coach: 'Mestre', category: 'Erwachsene' }, ...trainings])}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
-                  >
-                    <Plus size={16} /> Add Session
-                  </button>
-                </div>
-                <div className="grid gap-4">
-                  {trainings.map((session: any, idx: number) => (
-                    <div key={session.id} className="glass-card p-6 rounded-3xl space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input 
-                          type="text" 
-                          value={session.name}
-                          onChange={(e) => {
-                            const newT = [...trainings];
-                            newT[idx].name = e.target.value;
-                            setTrainings(newT);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
-                          placeholder="Name"
-                        />
-                        <select 
-                          value={session.day}
-                          onChange={(e) => {
-                            const newT = [...trainings];
-                            newT[idx].day = e.target.value;
-                            setTrainings(newT);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
-                        >
-                          {['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'].map(d => <option key={d} value={d} className="bg-brand-dark">{d}</option>)}
-                        </select>
-                        <input 
-                          type="text" 
-                          value={session.time}
-                          onChange={(e) => {
-                            const newT = [...trainings];
-                            newT[idx].time = e.target.value;
-                            setTrainings(newT);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
-                          placeholder="Time"
-                        />
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input 
-                          type="text" 
-                          value={session.location}
-                          onChange={(e) => {
-                            const newT = [...trainings];
-                            newT[idx].location = e.target.value;
-                            setTrainings(newT);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
-                          placeholder="Location Name"
-                        />
-                        <input 
-                          type="text" 
-                          value={session.coach}
-                          onChange={(e) => {
-                            const newT = [...trainings];
-                            newT[idx].coach = e.target.value;
-                            setTrainings(newT);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
-                          placeholder="Coach"
-                        />
-                      </div>
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          onClick={() => setTrainings(trainings.filter((_: any, i: number) => i !== idx))}
-                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
-                        >
-                          <Trash2 size={20} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Location Management */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold flex items-center gap-2">
-                    <MapPin size={20} className="text-brand-primary" /> Locations
-                  </h3>
-                  <button 
-                    onClick={() => setLocations([{ id: Date.now().toString(), name: 'New Location', addr: 'Address...', mapUrl: 'https://maps.google.com' }, ...locations])}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
-                  >
-                    <Plus size={16} /> Add Location
-                  </button>
-                </div>
-                <div className="grid gap-4">
-                  {locations.map((loc: any, idx: number) => (
-                    <div key={loc.id} className="glass-card p-6 rounded-3xl space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input 
-                          type="text" 
-                          value={loc.name}
-                          onChange={(e) => {
-                            const newL = [...locations];
-                            newL[idx].name = e.target.value;
-                            setLocations(newL);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
-                          placeholder="Location Name"
-                        />
-                        <input 
-                          type="text" 
-                          value={loc.addr}
-                          onChange={(e) => {
-                            const newL = [...locations];
-                            newL[idx].addr = e.target.value;
-                            setLocations(newL);
-                          }}
-                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
-                          placeholder="Address"
-                        />
-                      </div>
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          onClick={() => setLocations(locations.filter((_: any, i: number) => i !== idx))}
-                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
-                        >
-                          <Trash2 size={20} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </div>
 
@@ -977,6 +829,23 @@ export default function App() {
         </div>
       </section>
 
+      {/* Big Body Picture */}
+      <section className="px-6 py-4">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          className="relative h-64 md:h-96 rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10"
+        >
+          <img 
+            src={settings.bodyImageUrl} 
+            className="w-full h-full object-cover" 
+            alt="Capoeira Action"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-transparent opacity-60" />
+        </motion.div>
+      </section>
+
       <main className="space-y-12">
         {/* Tabs */}
         <div className="px-6">
@@ -1094,6 +963,19 @@ export default function App() {
           <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.history.title}</h2>
           <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
         </div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="rounded-3xl overflow-hidden h-48 md:h-64 border border-white/10"
+        >
+          <img 
+            src={settings.historyImageUrl} 
+            className="w-full h-full object-cover" 
+            alt="History"
+            referrerPolicy="no-referrer"
+          />
+        </motion.div>
 
         <div className="grid gap-6">
           <motion.div 
