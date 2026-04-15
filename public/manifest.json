@@ -1,0 +1,21 @@
+{
+  "name": "Capoeira Wien Elite",
+  "short_name": "CapoeiraWien",
+  "description": "Modern Capoeira training, news, and community platform in Vienna.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0B",
+  "theme_color": "#FF6A00",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/capoeira_icon/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/seed/capoeira_icon/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
