@@ -22,6 +22,25 @@ export default function App() {
     return saved ? JSON.parse(saved) : MOCK_NEWS;
   });
 
+  const [trainings, setTrainings] = useState(() => {
+    const saved = localStorage.getItem('capoeira_trainings');
+    return saved ? JSON.parse(saved) : MOCK_TRAININGS;
+  });
+
+  const [locations, setLocations] = useState(() => {
+    const saved = localStorage.getItem('capoeira_locations');
+    return saved ? JSON.parse(saved) : [
+      { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://maps.google.com' },
+      { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://maps.google.com' },
+      { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://maps.google.com' },
+    ];
+  });
+
+  const [belts, setBelts] = useState(() => {
+    const saved = localStorage.getItem('capoeira_belts');
+    return saved ? JSON.parse(saved) : translations[language].belts.levels;
+  });
+
   const [shopItems, setShopItems] = useState(() => {
     const saved = localStorage.getItem('capoeira_shop');
     return saved ? JSON.parse(saved) : [
@@ -41,13 +60,18 @@ export default function App() {
     const saved = localStorage.getItem('capoeira_settings');
     const defaults = { 
       appName: 'CAPOEIRA WIEN',
-      logoUrl: '',
+      logoUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
       primaryColor: '#FF6A00', 
       secondaryColor: '#00D4FF',
       whatsappNumber: '+436601234567',
       instagramUrl: 'https://instagram.com/capoeirawien',
       bgUrl: 'https://picsum.photos/seed/vibrant/1920/1080?blur=4',
-      bgType: 'image'
+      bgType: 'image',
+      urgentBanner: {
+        text: 'Training heute entfällt wegen Feiertag!',
+        active: false,
+        color: '#ff0000'
+      }
     };
     return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
   });
@@ -63,6 +87,7 @@ export default function App() {
   });
 
   const [isSummarizing, setIsSummarizing] = useState<string | null>(null);
+  const [contactTopic, setContactTopic] = useState<string>('trial');
 
   const [isShopModalOpen, setIsShopModalOpen] = useState(false);
   const [selectedShopItem, setSelectedShopItem] = useState<any>(null);
@@ -74,6 +99,18 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('capoeira_news', JSON.stringify(news));
   }, [news]);
+
+  useEffect(() => {
+    localStorage.setItem('capoeira_trainings', JSON.stringify(trainings));
+  }, [trainings]);
+
+  useEffect(() => {
+    localStorage.setItem('capoeira_locations', JSON.stringify(locations));
+  }, [locations]);
+
+  useEffect(() => {
+    localStorage.setItem('capoeira_belts', JSON.stringify(belts));
+  }, [belts]);
 
   useEffect(() => {
     localStorage.setItem('capoeira_shop', JSON.stringify(shopItems));
@@ -140,6 +177,30 @@ export default function App() {
         logoUrl={settings.logoUrl}
       />
       
+      {/* Urgent Banner */}
+      <AnimatePresence>
+        {settings.urgentBanner?.active && (
+          <motion.div 
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+            exit={{ y: -100 }}
+            className="fixed top-0 left-0 right-0 z-[100] px-6 py-3 flex items-center justify-between shadow-2xl"
+            style={{ backgroundColor: settings.urgentBanner.color }}
+          >
+            <div className="flex items-center gap-3 text-white font-bold text-sm">
+              <AlertCircle size={20} className="animate-pulse" />
+              <span className="uppercase tracking-tighter">{settings.urgentBanner.text}</span>
+            </div>
+            <button 
+              onClick={() => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, active: false } })}
+              className="p-1 hover:bg-black/10 rounded-full text-white"
+            >
+              <X size={20} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Promo Banner */}
       <AnimatePresence>
         {promo.active && (
@@ -176,6 +237,70 @@ export default function App() {
                 <button onClick={() => setIsAdmin(false)} className="p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors">
                   <X size={24} />
                 </button>
+              </div>
+
+              {/* Urgent Banner Settings */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <AlertCircle size={20} className="text-red-500" /> Urgent News Banner
+                </h3>
+                <div className="glass-card p-6 rounded-3xl space-y-4 border-2 border-red-500/20">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input 
+                      type="text" 
+                      value={settings.urgentBanner?.text}
+                      onChange={(e) => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, text: e.target.value } })}
+                      className="md:col-span-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-red-500"
+                      placeholder="Urgent message (e.g. Training Cancelled)"
+                    />
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="color" 
+                        value={settings.urgentBanner?.color}
+                        onChange={(e) => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, color: e.target.value } })}
+                        className="w-10 h-10 rounded-lg overflow-hidden bg-transparent border-none cursor-pointer"
+                      />
+                      <button 
+                        onClick={() => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, active: !settings.urgentBanner?.active } })}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors ${settings.urgentBanner?.active ? 'bg-red-500 text-white' : 'bg-white/10 text-white/40'}`}
+                      >
+                        {settings.urgentBanner?.active ? 'Active' : 'Inactive'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Urgent Banner Settings */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  <AlertCircle size={20} className="text-red-500" /> Urgent News Banner
+                </h3>
+                <div className="glass-card p-6 rounded-3xl space-y-4 border-2 border-red-500/20">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input 
+                      type="text" 
+                      value={settings.urgentBanner?.text}
+                      onChange={(e) => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, text: e.target.value } })}
+                      className="md:col-span-2 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-red-500"
+                      placeholder="Urgent message (e.g. Training Cancelled)"
+                    />
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="color" 
+                        value={settings.urgentBanner?.color}
+                        onChange={(e) => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, color: e.target.value } })}
+                        className="w-10 h-10 rounded-lg overflow-hidden bg-transparent border-none cursor-pointer"
+                      />
+                      <button 
+                        onClick={() => setSettings({ ...settings, urgentBanner: { ...settings.urgentBanner, active: !settings.urgentBanner?.active } })}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors ${settings.urgentBanner?.active ? 'bg-red-500 text-white' : 'bg-white/10 text-white/40'}`}
+                      >
+                        {settings.urgentBanner?.active ? 'Active' : 'Inactive'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Promo Settings */}
@@ -307,6 +432,341 @@ export default function App() {
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* Training Management */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Footprints size={20} className="text-brand-primary" /> Training Schedule
+                  </h3>
+                  <button 
+                    onClick={() => setTrainings([{ id: Date.now().toString(), name: 'New Training', day: 'Montag', time: '18:00 - 20:00', location: 'Kröllgasse', coach: 'Mestre', category: 'Erwachsene' }, ...trainings])}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
+                  >
+                    <Plus size={16} /> Add Session
+                  </button>
+                </div>
+                <div className="grid gap-4">
+                  {trainings.map((session: any, idx: number) => (
+                    <div key={session.id} className="glass-card p-6 rounded-3xl space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input 
+                          type="text" 
+                          value={session.name}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].name = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
+                          placeholder="Name"
+                        />
+                        <select 
+                          value={session.day}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].day = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                        >
+                          {['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'].map(d => <option key={d} value={d} className="bg-brand-dark">{d}</option>)}
+                        </select>
+                        <input 
+                          type="text" 
+                          value={session.time}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].time = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Time"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input 
+                          type="text" 
+                          value={session.location}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].location = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Location Name"
+                        />
+                        <input 
+                          type="text" 
+                          value={session.coach}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].coach = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Coach"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => setTrainings(trainings.filter((_: any, i: number) => i !== idx))}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Location Management */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <MapPin size={20} className="text-brand-primary" /> Locations
+                  </h3>
+                  <button 
+                    onClick={() => setLocations([{ id: Date.now().toString(), name: 'New Location', addr: 'Address...', mapUrl: 'https://maps.google.com' }, ...locations])}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
+                  >
+                    <Plus size={16} /> Add Location
+                  </button>
+                </div>
+                <div className="grid gap-4">
+                  {locations.map((loc: any, idx: number) => (
+                    <div key={loc.id} className="glass-card p-6 rounded-3xl space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input 
+                          type="text" 
+                          value={loc.name}
+                          onChange={(e) => {
+                            const newL = [...locations];
+                            newL[idx].name = e.target.value;
+                            setLocations(newL);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
+                          placeholder="Location Name"
+                        />
+                        <input 
+                          type="text" 
+                          value={loc.addr}
+                          onChange={(e) => {
+                            const newL = [...locations];
+                            newL[idx].addr = e.target.value;
+                            setLocations(newL);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Address"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => setLocations(locations.filter((_: any, i: number) => i !== idx))}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Training Management */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Footprints size={20} className="text-brand-primary" /> Training Schedule
+                  </h3>
+                  <button 
+                    onClick={() => setTrainings([{ id: Date.now().toString(), name: 'New Training', day: 'Montag', time: '18:00 - 20:00', location: 'Kröllgasse', coach: 'Mestre', category: 'Erwachsene' }, ...trainings])}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
+                  >
+                    <Plus size={16} /> Add Session
+                  </button>
+                </div>
+                <div className="grid gap-4">
+                  {trainings.map((session: any, idx: number) => (
+                    <div key={session.id} className="glass-card p-6 rounded-3xl space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input 
+                          type="text" 
+                          value={session.name}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].name = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
+                          placeholder="Name"
+                        />
+                        <select 
+                          value={session.day}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].day = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                        >
+                          {['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'].map(d => <option key={d} value={d} className="bg-brand-dark">{d}</option>)}
+                        </select>
+                        <input 
+                          type="text" 
+                          value={session.time}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].time = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Time"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input 
+                          type="text" 
+                          value={session.location}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].location = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Location Name"
+                        />
+                        <input 
+                          type="text" 
+                          value={session.coach}
+                          onChange={(e) => {
+                            const newT = [...trainings];
+                            newT[idx].coach = e.target.value;
+                            setTrainings(newT);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Coach"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => setTrainings(trainings.filter((_: any, i: number) => i !== idx))}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Location Management */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <MapPin size={20} className="text-brand-primary" /> Locations
+                  </h3>
+                  <button 
+                    onClick={() => setLocations([{ id: Date.now().toString(), name: 'New Location', addr: 'Address...', mapUrl: 'https://maps.google.com' }, ...locations])}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
+                  >
+                    <Plus size={16} /> Add Location
+                  </button>
+                </div>
+                <div className="grid gap-4">
+                  {locations.map((loc: any, idx: number) => (
+                    <div key={loc.id} className="glass-card p-6 rounded-3xl space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input 
+                          type="text" 
+                          value={loc.name}
+                          onChange={(e) => {
+                            const newL = [...locations];
+                            newL[idx].name = e.target.value;
+                            setLocations(newL);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
+                          placeholder="Location Name"
+                        />
+                        <input 
+                          type="text" 
+                          value={loc.addr}
+                          onChange={(e) => {
+                            const newL = [...locations];
+                            newL[idx].addr = e.target.value;
+                            setLocations(newL);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Address"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => setLocations(locations.filter((_: any, i: number) => i !== idx))}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Belt Management */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Trophy size={20} className="text-brand-primary" /> Belt System
+                  </h3>
+                  <button 
+                    onClick={() => setBelts([...belts, { color: 'New Belt', meaning: 'Description...' }])}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
+                  >
+                    <Plus size={16} /> Add Belt
+                  </button>
+                </div>
+                <div className="grid gap-4">
+                  {belts.map((belt: any, idx: number) => (
+                    <div key={idx} className="glass-card p-6 rounded-3xl space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input 
+                          type="text" 
+                          value={belt.color}
+                          onChange={(e) => {
+                            const newB = [...belts];
+                            newB[idx].color = e.target.value;
+                            setBelts(newB);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary font-bold"
+                          placeholder="Belt Color"
+                        />
+                        <input 
+                          type="text" 
+                          value={belt.meaning}
+                          onChange={(e) => {
+                            const newB = [...belts];
+                            newB[idx].meaning = e.target.value;
+                            setBelts(newB);
+                          }}
+                          className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-primary"
+                          placeholder="Meaning/Level"
+                        />
+                      </div>
+                      <div className="flex justify-end gap-2">
+                        <button 
+                          onClick={() => setBelts(belts.filter((_: any, i: number) => i !== idx))}
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -592,7 +1052,7 @@ export default function App() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {MOCK_TRAININGS.map((session) => (
+                      {trainings.map((session: any) => (
                         <tr key={session.id} className="hover:bg-white/5 transition-colors group">
                           <td className="px-6 py-4">
                             <div className="text-xs font-bold text-brand-primary">{session.day}</div>
@@ -631,51 +1091,70 @@ export default function App() {
       {/* Geschichte Section */}
       <section id="history" className="px-6 py-12 space-y-8">
         <div className="space-y-4">
-          <h2 className="text-3xl font-display font-bold tracking-tight">{t.history.title}</h2>
+          <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.history.title}</h2>
           <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
         </div>
-        
-        <div className="glass-card p-6 rounded-3xl space-y-6">
-          <div className="aspect-video rounded-2xl overflow-hidden">
-            <img 
-              src="https://picsum.photos/seed/capohistory/800/450" 
-              alt="Capoeira History" 
-              className="w-full h-full object-cover opacity-80"
-              referrerPolicy="no-referrer"
-            />
-          </div>
-          <div className="space-y-4 text-[var(--text-muted)] leading-relaxed font-light">
-            <p>
-              {language === 'DE' ? 
+
+        <div className="grid gap-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="glass-card p-6 rounded-3xl space-y-4 border-l-4 border-brand-primary"
+          >
+            <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Ursprung' : 'Origem'}</h3>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+              {language === 'DE' ?
                 'Capoeira ist eine einzigartige brasilianische Kunstform, die Kampf, Tanz, Musik und Akrobatik vereint. Ihre Wurzeln liegen in der Zeit der Sklaverei in Brasilien, als afrikanische Sklaven Kampftechniken als Tanz tarnen mussten, um sie vor ihren Unterdrückern geheim zu halten.' :
                 'A Capoeira é uma forma de arte brasileira única que combina luta, dança, música e acrobacia. Suas raízes remontam ao tempo da escravidão no Brasil, quando escravos africanos tiveram que disfarçar técnicas de luta como dança para mantê-las em segredo de seus opressores.'
               }
             </p>
-            <p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="glass-card p-6 rounded-3xl space-y-4"
+          >
+            <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Entwicklung' : 'Desenvolvimento'}</h3>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {language === 'DE' ?
                 'Nach der Abschaffung der Sklaverei im Jahr 1888 blieb Capoeira lange Zeit verboten und wurde erst in den 1930er Jahren durch Pioniere wie Mestre Bimba (Capoeira Regional) und Mestre Pastinha (Capoeira Angola) als nationales Kulturgut anerkannt.' :
                 'Após a abolição da escravidão em 1888, a Capoeira permaneceu proibida por muito tempo e só foi reconhecida como patrimônio cultural nacional na década de 1930 por pioneiros como Mestre Bimba (Capoeira Regional) e Mestre Pastinha (Capoeira Angola).'
               }
             </p>
-            <p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="glass-card p-6 rounded-3xl space-y-4 bg-brand-primary/5"
+          >
+            <h3 className="text-xl font-bold text-brand-primary">Meia Lua Inteira</h3>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {language === 'DE' ?
                 'Unsere Gruppe, Meia Lua Inteira, steht in der Tradition von Mestre Paulo Siqueira und pflegt die Werte von Respekt, Gemeinschaft und dem Erhalt dieser faszinierenden Kultur.' :
                 'Nosso grupo, Meia Lua Inteira, segue a tradição de Mestre Paulo Siqueira e cultiva os valores de respeito, comunidade e preservação desta cultura fascinante.'
               }
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Musik Section */}
-      <section id="music" className="px-6 py-12 space-y-8 bg-brand-primary/5">
+      <section id="music" className="px-6 py-12 space-y-8">
         <div className="space-y-4">
           <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.music.title}</h2>
           <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
         </div>
 
         <div className="grid gap-6">
-          <div className="glass-card p-6 rounded-3xl space-y-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="glass-card p-6 rounded-3xl space-y-4"
+          >
             <h3 className="text-xl font-bold text-brand-primary">Das Berimbau</h3>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {language === 'DE' ?
@@ -683,31 +1162,83 @@ export default function App() {
                 'O instrumento mais importante da roda. Ele determina o ritmo, a velocidade e o estilo do jogo. Composto por uma vara de madeira (biriba), uma corda (arame) e uma cabaça.'
               }
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid grid-cols-2 gap-4">
             {[
-              { name: 'Pandeiro', desc: language === 'DE' ? 'Die Rahmentrommel für den Takt.' : 'O pandeiro para o compasso.' },
-              { name: 'Atabaque', desc: language === 'DE' ? 'Die große Standtrommel.' : 'O grande tambor de chão.' },
+              { name: 'Pandeiro', desc: language === 'DE' ? 'Die Rahmentrommel.' : 'O pandeiro.' },
+              { name: 'Atabaque', desc: language === 'DE' ? 'Die Standtrommel.' : 'O tambor.' },
               { name: 'Agogô', desc: language === 'DE' ? 'Die Doppelglocke.' : 'O sino duplo.' },
               { name: 'Reco-Reco', desc: language === 'DE' ? 'Die Ratsche.' : 'O reco-reco.' }
             ].map((inst, i) => (
-              <div key={i} className="glass-card p-4 rounded-2xl space-y-2">
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="glass-card p-4 rounded-2xl space-y-2"
+              >
                 <div className="font-bold text-brand-primary text-sm">{inst.name}</div>
                 <div className="text-[10px] text-[var(--text-dim)] leading-tight">{inst.desc}</div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
-          <div className="glass-card p-6 rounded-3xl space-y-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="glass-card p-6 rounded-3xl space-y-4 border-t-4 border-brand-primary"
+          >
             <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Gesang & Roda' : 'Canto & Roda'}</h3>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {language === 'DE' ?
-                'In der Roda kommentiert der Gesang das Geschehen. Wir singen Ladainhas (Einleitung), Louvações (Danksagung) und Corridos (Antwortgesänge), die die Energie der Gruppe bündeln.' :
-                'Na roda, o canto comenta o que acontece. Cantamos ladainhas (introdução), louvações (agradecimento) e corridos (cantos de resposta), que concentram a energia do grupo.'
+                'In der Roda kommentiert der Gesang das Geschehen. Wir singen Ladainhas, Louvações und Corridos, die die Energie der Gruppe bündeln.' :
+                'Na roda, o canto comenta o que acontece. Cantamos ladainhas, louvações e corridos, que concentram a energia do grupo.'
               }
             </p>
-          </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Belts Section */}
+      <section id="belts" className="px-6 py-12 space-y-8">
+        <div className="space-y-4">
+          <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.belts.title}</h2>
+          <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
+          <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+            {t.belts.description}
+          </p>
+        </div>
+
+        <div className="space-y-3">
+          {belts.map((level: any, i: number) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.05 }}
+              className="glass-card p-4 rounded-2xl flex items-center gap-4 group hover:border-brand-primary/50 transition-all"
+            >
+              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 group-hover:bg-brand-primary/10 transition-colors">
+                <span className="text-xs font-bold text-brand-primary">{i + 1}</span>
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-bold text-[var(--text-color)]">{level.color}</div>
+                <div className="text-[10px] text-[var(--text-dim)] uppercase tracking-widest font-bold">{level.meaning}</div>
+              </div>
+              <div className="w-12 h-2 rounded-full overflow-hidden flex border border-white/10">
+                {/* Simple color preview logic based on name */}
+                {level.color.toLowerCase().includes('crua') || level.color.toLowerCase().includes('weiß') ? <div className="flex-1 bg-white" /> : null}
+                {level.color.toLowerCase().includes('amarela') || level.color.toLowerCase().includes('gelb') ? <div className="flex-1 bg-yellow-400" /> : null}
+                {level.color.toLowerCase().includes('laranja') || level.color.toLowerCase().includes('orange') ? <div className="flex-1 bg-orange-500" /> : null}
+                {level.color.toLowerCase().includes('azul') || level.color.toLowerCase().includes('blau') ? <div className="flex-1 bg-blue-600" /> : null}
+                {level.color.toLowerCase().includes('verde') || level.color.toLowerCase().includes('grün') ? <div className="flex-1 bg-green-600" /> : null}
+                {level.color.toLowerCase().includes('roxa') || level.color.toLowerCase().includes('violett') ? <div className="flex-1 bg-purple-600" /> : null}
+                {level.color.toLowerCase().includes('marrom') || level.color.toLowerCase().includes('braun') ? <div className="flex-1 bg-amber-900" /> : null}
+                {level.color.toLowerCase().includes('vermelha') || level.color.toLowerCase().includes('rot') ? <div className="flex-1 bg-red-600" /> : null}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -755,17 +1286,16 @@ export default function App() {
       <section id="locations" className="px-6 py-12 space-y-6">
         <h2 className="text-2xl font-display font-bold">{t.nav.locations}</h2>
         <div className="grid gap-4">
-          {[
-            { name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien' },
-            { name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien' },
-            { name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien' },
-          ].map((loc, i) => (
+          {locations.map((loc: any, i: number) => (
             <div key={i} className="glass-card p-4 rounded-2xl flex items-center justify-between">
               <div>
                 <div className="text-sm font-bold text-[var(--text-color)]">{loc.name}</div>
                 <div className="text-[10px] text-[var(--text-dim)]">{loc.addr}</div>
               </div>
-              <button className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+              <button 
+                onClick={() => window.open(loc.mapUrl || 'https://maps.google.com', '_blank')}
+                className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
+              >
                 <ExternalLink size={16} className="text-brand-primary" />
               </button>
             </div>
@@ -776,22 +1306,65 @@ export default function App() {
       {/* Contact Section */}
       <section id="contact" className="px-6 py-12 space-y-8">
         <div className="space-y-4">
-          <h2 className="text-3xl font-display font-bold tracking-tight">{t.nav.contact}</h2>
+          <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.nav.contact}</h2>
           <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
         </div>
         
-        <div className="glass-card p-8 rounded-3xl space-y-6">
-          <div className="space-y-2">
-            <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">Email</div>
-            <div className="text-[var(--text-color)]">info@capoeiravienna.at</div>
+        <div className="glass-card p-8 rounded-3xl space-y-8">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 text-brand-primary">
+              <MessageCircle size={24} />
+              <h3 className="text-xl font-bold">{t.contact.whatsappTitle}</h3>
+            </div>
+            <p className="text-xs text-[var(--text-dim)] uppercase tracking-widest font-bold">
+              {t.contact.whatsappSubtitle}
+            </p>
+
+            <div className="grid gap-3">
+              {t.contact.options.map((opt: any) => (
+                <button
+                  key={opt.id}
+                  onClick={() => setContactTopic(opt.id)}
+                  className={`p-4 rounded-2xl border transition-all text-left flex items-center justify-between group ${
+                    contactTopic === opt.id 
+                      ? 'bg-brand-primary/10 border-brand-primary text-brand-primary' 
+                      : 'bg-white/5 border-white/10 text-[var(--text-muted)] hover:border-white/20'
+                  }`}
+                >
+                  <span className="text-sm font-bold">{opt.label}</span>
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                    contactTopic === opt.id ? 'border-brand-primary bg-brand-primary' : 'border-white/20'
+                  }`}>
+                    {contactTopic === opt.id && <div className="w-2 h-2 bg-brand-dark rounded-full" />}
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => {
+                const opt = t.contact.options.find((o: any) => o.id === contactTopic);
+                if (opt) {
+                  window.open(`https://wa.me/${settings.whatsappNumber.replace(/\+/g, '')}?text=${encodeURIComponent(opt.text)}`, '_blank');
+                }
+              }}
+              className="w-full py-4 bg-brand-primary text-brand-dark rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-brand-primary/20 hover:scale-[1.02] transition-transform active:scale-95 mt-4"
+            >
+              <MessageCircle size={20} />
+              {t.contact.sendBtn}
+            </button>
           </div>
-          <div className="space-y-2">
-            <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">{language === 'DE' ? 'Standort' : 'Localização'}</div>
-            <div className="text-[var(--text-color)]">Wien, Österreich</div>
+
+          <div className="pt-8 border-t border-white/5 grid gap-6">
+            <div className="space-y-2">
+              <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">Email</div>
+              <div className="text-[var(--text-color)] font-medium">info@capoeiravienna.at</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-xs font-bold uppercase tracking-widest text-brand-primary">{language === 'DE' ? 'Standort' : 'Localização'}</div>
+              <div className="text-[var(--text-color)] font-medium">Wien, Österreich</div>
+            </div>
           </div>
-          <button className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-bold text-[var(--text-color)] hover:bg-white/10 transition-colors">
-            {language === 'DE' ? 'Nachricht senden' : 'Enviar mensagem'}
-          </button>
         </div>
       </section>
 

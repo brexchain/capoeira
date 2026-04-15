@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, User, Bell, X, Sun, Moon, Globe, Settings, Home, Zap, ShoppingBag, Footprints, Drum, History, MapPin, Mail } from 'lucide-react';
+import { Menu, User, Bell, X, Sun, Moon, Globe, Settings, Home, Zap, ShoppingBag, Footprints, Drum, History, MapPin, Mail, Award } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface NavbarProps {
@@ -43,6 +43,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, language, setLanguag
     { name: t.nav.training, href: '#training', icon: Footprints },
     { name: t.nav.news, href: '#news', icon: Zap },
     { name: t.nav.shop, href: '#shop', icon: ShoppingBag },
+    { name: t.nav.belts, href: '#belts', icon: Award },
     { name: t.nav.history, href: '#history', icon: History },
     { name: t.nav.music, href: '#music', icon: Drum },
     { name: t.nav.locations, href: '#locations', icon: MapPin },
