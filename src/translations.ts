@@ -41,10 +41,55 @@ export const translations = {
       whatsappMsg: 'Hallo, ich interessiere mich für das Training: '
     },
     history: {
-      title: 'Geschichte der Capoeira'
+      title: 'Geschichte der Capoeira',
+      groupTitle: 'Meia Lua Inteira',
+      groupDescription: 'Die Associação Meia Lua Inteira wurde 1990 von Mestre Birilo in Recife, Pernambuco, gegründet. Nur zwei Jahre später wurde der Verein Meia Lua Inteira in Wien ins Leben gerufen.',
+      categories: [
+        { id: 'origins', title: 'Ursprung', desc: 'Gegründet 1990 in Recife, Pernambuco von Mestre Birilo.' },
+        { id: 'vienna', title: 'Wien', desc: 'Seit 1992 in Wien aktiv. 1997 kam Mestre Will, 1998 Mestre Mula und 1999 Mestre Carlinhos.' },
+        { id: 'philosophy', title: 'Philosophie', desc: 'Capoeira Contemporânea als lebendige Sportart mit Fokus auf Trainingswissenschaft.' }
+      ],
+      timeline: [
+        { year: '1990', event: 'Gründung in Recife durch Mestre Birilo' },
+        { year: '1992', event: 'Verein Meia Lua Inteira in Wien ins Leben gerufen' },
+        { year: '1997', event: 'Mestre Will kommt nach Wien zur Unterstützung' },
+        { year: '1998', event: 'Mestre Mula reist nach Wien, unterstützt von Mestre Régis' },
+        { year: '1999', event: 'Mestre Carlinhos folgt nach Wien' }
+      ],
+      focus: 'Seither bietet der Verein Wien mehrmals wöchentlich Trainings für Anfänger*innen, Fortgeschrittene und Kinder an, geleitet von Mestre Carlinhos, Contramestre Marc und Graduados.'
+    },
+    team: {
+      title: 'Unsere Trainer',
+      members: [
+        {
+          name: 'Mestre Carlinhos',
+          role: 'Mestre / Gründer Wien',
+          bio: 'Stammt aus Recife, Brasilien. 1990 wurde die Gruppe Meia Lua Inteira in Recife von ihm mitbegründet. Seit 1999 lebt Carlos in Wien und unterrichtet im Verein Meia Lua Inteira Wien.'
+        },
+        {
+          name: 'Contra Mestre Marc',
+          role: 'Contra Mestre',
+          bio: 'Begann 1997 in Wien bei Mestre Will. 2012 wurde ihm von Mestre Mula die Kordel des Professor verliehen, 2023 die des Contra Mestre.'
+        },
+        {
+          name: 'Professor Matthieu',
+          role: 'Professor',
+          bio: 'Begann 2003 bei Meia Lua Inteira Wien. Seit 2013 unterrichtet er Erwachsene und Kinder. 2025 wurde ihm die Kordel des Professors verliehen.'
+        },
+        {
+          name: 'Professor Algodão',
+          role: 'Professor',
+          bio: 'Stammt aus Recife, begann 2006 mit Capoeira. 2015 kam er nach Österreich. 2023 wurde ihm die Kordel des Professors verliehen.'
+        }
+      ]
     },
     music: {
-      title: 'Musik in der Capoeira'
+      title: 'Musik in der Capoeira',
+      categories: [
+        { id: 'instruments', title: 'Instrumente', desc: 'Berimbau, Pandeiro, Atabaque, Agogô und Reco-Reco bilden die Bateria.' },
+        { id: 'songs', title: 'Gesang', desc: 'Ladainhas, Corridos und Louvações erzählen Geschichten und leiten die Roda.' },
+        { id: 'rhythms', title: 'Rhythmen', desc: 'Toques wie Angola, São Bento Grande und Banguela bestimmen das Spiel.' }
+      ]
     },
     belts: {
       title: 'Kordelsystem',
@@ -140,10 +185,55 @@ export const translations = {
       whatsappMsg: 'Olá, estou interessado no treino: '
     },
     history: {
-      title: 'História da Capoeira'
+      title: 'História da Capoeira',
+      groupTitle: 'Meia Lua Inteira',
+      groupDescription: 'A Associação Meia Lua Inteira foi fundada em 1990 pelo Mestre Birilo em Recife, Pernambuco. Apenas dois anos depois, a associação Meia Lua Inteira foi fundada em Viena.',
+      categories: [
+        { id: 'origins', title: 'Origens', desc: 'Fundada em 1990 em Recife, Pernambuco pelo Mestre Birilo.' },
+        { id: 'vienna', title: 'Viena', desc: 'Ativa em Viena desde 1992. Em 1997 chegou Mestre Will, em 1998 Mestre Mula e em 1999 Mestre Carlinhos.' },
+        { id: 'philosophy', title: 'Filosofia', desc: 'Capoeira Contemporânea como esporte vivo com foco na ciência do esporte.' }
+      ],
+      timeline: [
+        { year: '1990', event: 'Fundação em Recife pelo Mestre Birilo' },
+        { year: '1992', event: 'Associação Meia Lua Inteira fundada em Viena' },
+        { year: '1997', event: 'Mestre Will chega a Viena para apoiar' },
+        { year: '1998', event: 'Mestre Mula viaja para Viena, apoiado pelo Mestre Régis' },
+        { year: '1999', event: 'Mestre Carlinhos segue para Viena' }
+      ],
+      focus: 'Desde então, a associação de Viena oferece treinos várias vezes por semana para iniciantes, avançados e crianças, liderados pelo Mestre Carlinhos, Contramestre Marc e Graduados.'
+    },
+    team: {
+      title: 'Nossos Treinadores',
+      members: [
+        {
+          name: 'Mestre Carlinhos',
+          role: 'Mestre / Fundador Viena',
+          bio: 'Natural de Recife, Brasil. Em 1990, o grupo Meia Lua Inteira em Recife foi co-fundado por ele. Desde 1999, Carlos vive em Viena e leciona na associação Meia Lua Inteira Wien.'
+        },
+        {
+          name: 'Contra Mestre Marc',
+          role: 'Contra Mestre',
+          bio: 'Começou em 1997 em Viena com Mestre Will. Em 2012, recebeu a corda de Professor do Mestre Mula, em 2023 a de Contra Mestre.'
+        },
+        {
+          name: 'Professor Matthieu',
+          role: 'Professor',
+          bio: 'Começou em 2003 na Meia Lua Inteira Wien. Desde 2013 leciona para adultos e crianças. Em 2025, recebeu a corda de Professor.'
+        },
+        {
+          name: 'Professor Algodão',
+          role: 'Professor',
+          bio: 'Natural de Recife, começou a capoeira em 2006. Em 2015 veio para a Áustria. Em 2023, recebeu a corda de Professor.'
+        }
+      ]
     },
     music: {
-      title: 'Música na Capoeira'
+      title: 'Música na Capoeira',
+      categories: [
+        { id: 'instruments', title: 'Instrumentos', desc: 'Berimbau, Pandeiro, Atabaque, Agogô e Reco-Reco formam a bateria.' },
+        { id: 'songs', title: 'Cânticos', desc: 'Ladainhas, Corridos e Louvações contam histórias e guiam a roda.' },
+        { id: 'rhythms', title: 'Ritmos', desc: 'Toques como Angola, São Bento Grande e Banguela determinam o jogo.' }
+      ]
     },
     belts: {
       title: 'Sistema de Cordas',

@@ -5,59 +5,95 @@ import { NewsCard } from './components/NewsCard';
 import { ShopModal } from './components/ShopModal';
 import { MOCK_NEWS, MOCK_TRAININGS } from './constants';
 import { summarizeNews } from './lib/gemini';
-import { Sparkles, ChevronRight, Play, Trophy, Target, Zap, MapPin, MessageCircle, AlertCircle, Save, Trash2, Plus, X, ExternalLink, Palette, Home, ShoppingBag, Footprints } from 'lucide-react';
+import { Sparkles, ChevronRight, Play, Trophy, Target, Zap, MapPin, MessageCircle, AlertCircle, Save, Trash2, Plus, X, ExternalLink, Palette, Home, ShoppingBag, Footprints, History } from 'lucide-react';
 import { Language, translations } from './translations';
 
 export default function App() {
   const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('capoeira_lang');
-    return (saved as Language) || 'DE';
+    try {
+      const saved = localStorage.getItem('capoeira_lang');
+      return (saved as Language) || 'DE';
+    } catch {
+      return 'DE';
+    }
   });
-  const t = translations[language];
+  const t = translations[language] || translations.DE;
 
   const [isAdmin, setIsAdmin] = useState(false);
   
   const [news, setNews] = useState(() => {
-    const saved = localStorage.getItem('capoeira_news');
-    return saved ? JSON.parse(saved) : MOCK_NEWS;
+    try {
+      const saved = localStorage.getItem('capoeira_news');
+      return saved ? JSON.parse(saved) : MOCK_NEWS;
+    } catch {
+      return MOCK_NEWS;
+    }
   });
 
   const [trainings, setTrainings] = useState(() => {
-    const saved = localStorage.getItem('capoeira_trainings');
-    return saved ? JSON.parse(saved) : MOCK_TRAININGS;
+    try {
+      const saved = localStorage.getItem('capoeira_trainings');
+      return saved ? JSON.parse(saved) : MOCK_TRAININGS;
+    } catch {
+      return MOCK_TRAININGS;
+    }
   });
 
   const [locations, setLocations] = useState(() => {
-    const saved = localStorage.getItem('capoeira_locations');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://maps.google.com' },
-      { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://maps.google.com' },
-      { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://maps.google.com' },
-    ];
+    try {
+      const saved = localStorage.getItem('capoeira_locations');
+      return saved ? JSON.parse(saved) : [
+        { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://maps.google.com' },
+        { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://maps.google.com' },
+        { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://maps.google.com' },
+      ];
+    } catch {
+      return [
+        { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://maps.google.com' },
+        { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://maps.google.com' },
+        { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://maps.google.com' },
+      ];
+    }
   });
 
   const [belts, setBelts] = useState(() => {
-    const saved = localStorage.getItem('capoeira_belts');
-    return saved ? JSON.parse(saved) : translations[language].belts.levels;
+    try {
+      const saved = localStorage.getItem('capoeira_belts');
+      return saved ? JSON.parse(saved) : (translations[language]?.belts.levels || translations.DE.belts.levels);
+    } catch {
+      return translations.DE.belts.levels;
+    }
   });
 
   const [shopItems, setShopItems] = useState(() => {
-    const saved = localStorage.getItem('capoeira_shop');
-    return saved ? JSON.parse(saved) : [
-      { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'https://picsum.photos/seed/tshirt/400/400', category: 'Apparel' },
-      { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'https://picsum.photos/seed/berimbau/400/400', category: 'Instruments' },
-      { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'https://picsum.photos/seed/pandeiro/400/400', category: 'Instruments' },
-      { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'https://picsum.photos/seed/atabaque/400/400', category: 'Instruments' },
-    ];
+    try {
+      const saved = localStorage.getItem('capoeira_shop');
+      return saved ? JSON.parse(saved) : [
+        { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Apparel' },
+        { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+        { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+        { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+      ];
+    } catch {
+      return [
+        { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Apparel' },
+        { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+        { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+        { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+      ];
+    }
   });
 
   const [promo, setPromo] = useState(() => {
-    const saved = localStorage.getItem('capoeira_promo');
-    return saved ? JSON.parse(saved) : { text: 'Monatsroda am 19. April! Alle Level willkommen.', active: true };
+    try {
+      const saved = localStorage.getItem('capoeira_promo');
+      return saved ? JSON.parse(saved) : { text: 'Monatsroda am 19. April! Alle Level willkommen.', active: true };
+    } catch {
+      return { text: 'Monatsroda am 19. April! Alle Level willkommen.', active: true };
+    }
   });
 
   const [settings, setSettings] = useState(() => {
-    const saved = localStorage.getItem('capoeira_settings');
     const defaults = { 
       appName: 'CAPOEIRA WIEN',
       logoUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
@@ -65,27 +101,40 @@ export default function App() {
       secondaryColor: '#00D4FF',
       whatsappNumber: '+436601234567',
       instagramUrl: 'https://instagram.com/capoeirawien',
-      bgUrl: 'https://picsum.photos/seed/vibrant/1920/1080?blur=4',
+      bgUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
       bgType: 'image',
-      bodyImageUrl: 'https://picsum.photos/seed/capoeira/1200/600',
-      historyImageUrl: 'https://picsum.photos/seed/history/800/400',
+      bodyImageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
+      historyImageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
       urgentBanner: {
         text: 'Training heute entfällt wegen Feiertag!',
         active: false,
         color: '#ff0000'
       }
     };
-    return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+    try {
+      const saved = localStorage.getItem('capoeira_settings');
+      return saved ? { ...defaults, ...JSON.parse(saved) } : defaults;
+    } catch {
+      return defaults;
+    }
   });
 
   const [activeTab, setActiveTab] = useState<'news' | 'trainings'>(() => {
-    const saved = localStorage.getItem('capoeira_active_tab');
-    return (saved as 'news' | 'trainings') || 'news';
+    try {
+      const saved = localStorage.getItem('capoeira_active_tab');
+      return (saved as 'news' | 'trainings') || 'news';
+    } catch {
+      return 'news';
+    }
   });
 
   const [summaries, setSummaries] = useState<Record<string, string>>(() => {
-    const saved = localStorage.getItem('capoeira_summaries');
-    return saved ? JSON.parse(saved) : {};
+    try {
+      const saved = localStorage.getItem('capoeira_summaries');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
   });
 
   const [isSummarizing, setIsSummarizing] = useState<string | null>(null);
@@ -629,7 +678,7 @@ export default function App() {
                     <MessageCircle size={20} className="text-brand-primary" /> News Articles
                   </h3>
                   <button 
-                    onClick={() => setNews([{ id: Date.now().toString(), title: 'New Article', excerpt: 'Edit me...', category: 'Update', date: new Date().toISOString().split('T')[0], imageUrl: 'https://picsum.photos/seed/new/800/600' }, ...news])}
+                    onClick={() => setNews([{ id: Date.now().toString(), title: 'New Article', excerpt: 'Edit me...', category: 'Update', date: new Date().toISOString().split('T')[0], imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png' }, ...news])}
                     className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
                   >
                     <Plus size={16} /> Add News
@@ -692,7 +741,7 @@ export default function App() {
                     <Palette size={20} className="text-brand-primary" /> Shop Items
                   </h3>
                   <button 
-                    onClick={() => setShopItems([{ id: Date.now().toString(), name: 'New Item', price: '0€', imageUrl: 'https://picsum.photos/seed/item/400/400', category: 'General' }, ...shopItems])}
+                    onClick={() => setShopItems([{ id: Date.now().toString(), name: 'New Item', price: '0€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'General' }, ...shopItems])}
                     className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
                   >
                     <Plus size={16} /> Add Item
@@ -977,50 +1026,78 @@ export default function App() {
           />
         </motion.div>
 
-        <div className="grid gap-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="glass-card p-6 rounded-3xl space-y-4 border-l-4 border-brand-primary"
-          >
-            <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Ursprung' : 'Origem'}</h3>
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-brand-primary">{t.history.groupTitle}</h3>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-              {language === 'DE' ?
-                'Capoeira ist eine einzigartige brasilianische Kunstform, die Kampf, Tanz, Musik und Akrobatik vereint. Ihre Wurzeln liegen in der Zeit der Sklaverei in Brasilien, als afrikanische Sklaven Kampftechniken als Tanz tarnen mussten, um sie vor ihren Unterdrückern geheim zu halten.' :
-                'A Capoeira é uma forma de arte brasileira única que combina luta, dança, música e acrobacia. Suas raízes remontam ao tempo da escravidão no Brasil, quando escravos africanos tiveram que disfarçar técnicas de luta como dança para mantê-las em segredo de seus opressores.'
-              }
+              {t.history.groupDescription}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="glass-card p-6 rounded-3xl space-y-4"
-          >
-            <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Entwicklung' : 'Desenvolvimento'}</h3>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-              {language === 'DE' ?
-                'Nach der Abschaffung der Sklaverei im Jahr 1888 blieb Capoeira lange Zeit verboten und wurde erst in den 1930er Jahren durch Pioniere wie Mestre Bimba (Capoeira Regional) und Mestre Pastinha (Capoeira Angola) als nationales Kulturgut anerkannt.' :
-                'Após a abolição da escravidão em 1888, a Capoeira permaneceu proibida por muito tempo e só foi reconhecida como patrimônio cultural nacional na década de 1930 por pioneiros como Mestre Bimba (Capoeira Regional) e Mestre Pastinha (Capoeira Angola).'
-              }
-            </p>
-          </motion.div>
+          {/* Horizontal Categories for History */}
+          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+            {t.history.categories?.map((cat: any) => (
+              <div key={cat.id} className="min-w-[240px] glass-card p-6 rounded-3xl space-y-2 border-l-4 border-brand-primary">
+                <h4 className="font-bold text-brand-primary">{cat.title}</h4>
+                <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{cat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="glass-card p-6 rounded-3xl space-y-4 bg-brand-primary/5"
-          >
-            <h3 className="text-xl font-bold text-brand-primary">Meia Lua Inteira</h3>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-              {language === 'DE' ?
-                'Unsere Gruppe, Meia Lua Inteira, steht in der Tradition von Mestre Paulo Siqueira und pflegt die Werte von Respekt, Gemeinschaft und dem Erhalt dieser faszinierenden Kultur.' :
-                'Nosso grupo, Meia Lua Inteira, segue a tradição de Mestre Paulo Siqueira e cultiva os valores de respeito, comunidade e preservação desta cultura fascinante.'
-              }
-            </p>
-          </motion.div>
+        {/* Horizontal Timeline */}
+        <div className="space-y-4">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--text-dim)]">Timeline</h4>
+          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+            {t.history.timeline.map((item: any, i: number) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.1 }}
+                className="min-w-[200px] glass-card p-6 rounded-3xl space-y-2 border-t-2 border-brand-primary"
+              >
+                <div className="text-2xl font-display font-bold text-brand-primary">{item.year}</div>
+                <div className="text-xs text-[var(--text-color)] leading-tight">{item.event}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        <div className="glass-card p-6 rounded-3xl bg-brand-primary/5">
+          <p className="text-sm text-[var(--text-muted)] leading-relaxed italic">
+            {t.history.focus}
+          </p>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section id="team" className="px-6 py-12 space-y-8">
+        <div className="space-y-4">
+          <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.team.title}</h2>
+          <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
+        </div>
+
+        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+          {t.team.members.map((member: any, i: number) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="min-w-[280px] glass-card p-6 rounded-3xl space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="text-xl font-bold text-brand-primary">{member.name}</div>
+                <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold uppercase tracking-widest text-[var(--text-dim)]">
+                  {member.role}
+                </div>
+              </div>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
+                {member.bio}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -1031,54 +1108,48 @@ export default function App() {
           <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
         </div>
 
-        <div className="grid gap-6">
+        {/* Horizontal Categories for Music */}
+        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+          {t.music.categories?.map((cat: any) => (
+            <div key={cat.id} className="min-w-[240px] glass-card p-6 rounded-3xl space-y-2 border-l-4 border-brand-primary">
+              <h4 className="font-bold text-brand-primary">{cat.title}</h4>
+              <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{cat.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            className="glass-card p-6 rounded-3xl space-y-4"
+            className="min-w-[280px] glass-card p-6 rounded-3xl space-y-4"
           >
             <h3 className="text-xl font-bold text-brand-primary">Das Berimbau</h3>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {language === 'DE' ?
-                'Das wichtigste Instrument in der Roda. Es bestimmt den Rhythmus, die Geschwindigkeit und den Stil des Spiels. Bestehend aus einem Holzstab (Biriba), einer Saite (Arame) und einer Kalebasse (Cabaça).' :
-                'O instrumento mais importante da roda. Ele determina o ritmo, a velocidade e o estilo do jogo. Composto por uma vara de madeira (biriba), uma corda (arame) e uma cabaça.'
+                'Das wichtigste Instrument in der Roda. Es bestimmt den Rhythmus, die Geschwindigkeit und den Stil des Spiels.' :
+                'O instrumento mais importante da roda. Ele determina o ritmo, a velocidade e o estilo do jogo.'
               }
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { name: 'Pandeiro', desc: language === 'DE' ? 'Die Rahmentrommel.' : 'O pandeiro.' },
-              { name: 'Atabaque', desc: language === 'DE' ? 'Die Standtrommel.' : 'O tambor.' },
-              { name: 'Agogô', desc: language === 'DE' ? 'Die Doppelglocke.' : 'O sino duplo.' },
-              { name: 'Reco-Reco', desc: language === 'DE' ? 'Die Ratsche.' : 'O reco-reco.' }
-            ].map((inst, i) => (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="glass-card p-4 rounded-2xl space-y-2"
-              >
-                <div className="font-bold text-brand-primary text-sm">{inst.name}</div>
-                <div className="text-[10px] text-[var(--text-dim)] leading-tight">{inst.desc}</div>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="glass-card p-6 rounded-3xl space-y-4 border-t-4 border-brand-primary"
-          >
-            <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Gesang & Roda' : 'Canto & Roda'}</h3>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-              {language === 'DE' ?
-                'In der Roda kommentiert der Gesang das Geschehen. Wir singen Ladainhas, Louvações und Corridos, die die Energie der Gruppe bündeln.' :
-                'Na roda, o canto comenta o que acontece. Cantamos ladainhas, louvações e corridos, que concentram a energia do grupo.'
-              }
-            </p>
-          </motion.div>
+          {[
+            { name: 'Pandeiro', desc: language === 'DE' ? 'Die Rahmentrommel.' : 'O pandeiro.' },
+            { name: 'Atabaque', desc: language === 'DE' ? 'Die Standtrommel.' : 'O tambor.' },
+            { name: 'Agogô', desc: language === 'DE' ? 'Die Doppelglocke.' : 'O sino duplo.' },
+            { name: 'Reco-Reco', desc: language === 'DE' ? 'Die Ratsche.' : 'O reco-reco.' }
+          ].map((inst, i) => (
+            <motion.div 
+              key={i} 
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="min-w-[160px] glass-card p-6 rounded-3xl space-y-2"
+            >
+              <div className="font-bold text-brand-primary text-sm">{inst.name}</div>
+              <div className="text-[10px] text-[var(--text-dim)] leading-tight">{inst.desc}</div>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -1087,9 +1158,34 @@ export default function App() {
         <div className="space-y-4">
           <h2 className="text-3xl font-display font-bold tracking-tight text-[var(--text-color)]">{t.belts.title}</h2>
           <div className="w-20 h-1.5 bg-brand-primary rounded-full" />
+        </div>
+
+        <div className="space-y-6">
           <p className="text-sm text-[var(--text-muted)] leading-relaxed">
             {t.belts.description}
           </p>
+
+          {/* Group Info Tiles in Belts Section */}
+          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
+            <div className="min-w-[280px] glass-card p-6 rounded-3xl space-y-3 border-t-4 border-brand-primary">
+              <div className="flex items-center gap-2 text-brand-primary">
+                <History size={18} />
+                <h4 className="font-bold uppercase tracking-widest text-xs">Meia Lua Inteira</h4>
+              </div>
+              <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
+                {t.history.groupDescription}
+              </p>
+            </div>
+            <div className="min-w-[280px] glass-card p-6 rounded-3xl space-y-3 border-t-4 border-brand-secondary">
+              <div className="flex items-center gap-2 text-brand-secondary">
+                <Footprints size={18} />
+                <h4 className="font-bold uppercase tracking-widest text-xs">Training & Fokus</h4>
+              </div>
+              <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
+                {t.history.focus}
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-3">
@@ -1256,6 +1352,7 @@ export default function App() {
           { name: t.nav.home, href: '#home', icon: Home },
           { name: 'News', href: '#news', icon: Zap },
           { name: 'Shop', href: '#shop', icon: ShoppingBag },
+          { name: 'Team', href: '#team', icon: Trophy },
           { name: 'Plan', href: '#training', icon: Footprints },
           { name: 'Orte', href: '#locations', icon: MapPin }
         ].map((item, i) => (
