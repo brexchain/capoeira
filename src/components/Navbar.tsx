@@ -80,21 +80,36 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, language, setLanguag
         
         <div className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
-            <button 
-              key={link.href}
-              onClick={() => handleNavigate(link.href)}
-              className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] hover:text-brand-primary transition-colors"
-            >
-              <link.icon size={14} />
-              {link.name}
-            </button>
+            <div key={link.href} className="relative group">
+              <button 
+                onClick={() => handleNavigate(link.href)}
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] hover:text-brand-primary transition-colors"
+              >
+                <link.icon size={14} />
+                {link.name}
+              </button>
+              {link.href === '#training' && (
+                <div className="absolute top-full left-0 mt-2 w-64 p-4 glass-card rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all scale-95 group-hover:scale-100 origin-top shadow-2xl border border-brand-primary/20">
+                  <div className="text-[10px] uppercase tracking-widest font-bold text-brand-primary mb-2">Hauptakademie (15. Bezirk)</div>
+                  <div className="text-xs text-[var(--text-color)] font-medium mb-3">Kröllgasse 26, 1150 Wien</div>
+                  <a 
+                    href="https://www.google.com/maps/search/?api=1&query=Kröllgasse+26,+1150+Wien" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-[10px] font-bold text-brand-secondary hover:underline"
+                  >
+                    <MapPin size={12} /> Google Maps Link
+                  </a>
+                </div>
+              )}
+            </div>
           ))}
         </div>
 
         <div className="flex items-center gap-2">
           {/* Language Switcher */}
           <button 
-            onClick={() => setLanguage(language === 'DE' ? 'PT' : 'DE')}
+            onClick={() => setLanguage(language === 'DE' ? 'EN' : language === 'EN' ? 'PT' : 'DE')}
             className="flex items-center gap-1 px-2 py-1 hover:bg-white/10 rounded-lg transition-colors text-[10px] font-bold"
           >
             <Globe size={14} />
@@ -141,14 +156,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigate, language, setLanguag
           >
             <div className="flex flex-col gap-8">
               {navLinks.map((link) => (
-                <button 
-                  key={link.href}
-                  onClick={() => handleNavigate(link.href)}
-                  className="flex items-center gap-4 text-4xl font-display font-bold text-left text-[var(--text-color)] hover:text-brand-primary transition-colors"
-                >
-                  <link.icon size={32} className="text-brand-primary" />
-                  {link.name}
-                </button>
+                <div key={link.href} className="space-y-2">
+                  <button 
+                    onClick={() => handleNavigate(link.href)}
+                    className="flex items-center gap-4 text-4xl font-display font-bold text-left text-[var(--text-color)] hover:text-brand-primary transition-colors"
+                  >
+                    <link.icon size={32} className="text-brand-primary" />
+                    {link.name}
+                  </button>
+                  {link.href === '#training' && (
+                    <div className="pl-12 space-y-1">
+                      <div className="text-[10px] uppercase tracking-widest font-bold text-brand-secondary">Hauptakademie (15. Bezirk)</div>
+                      <div className="text-xs text-[var(--text-muted)]">Kröllgasse 26, 1150 Wien</div>
+                      <a 
+                        href="https://www.google.com/maps/search/?api=1&query=Kröllgasse+26,+1150+Wien" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-bold text-brand-primary flex items-center gap-1"
+                      >
+                        <MapPin size={10} /> Google Maps
+                      </a>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </motion.div>

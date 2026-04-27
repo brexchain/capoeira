@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, MessageCircle, Sparkles, User, ShoppingBag, ArrowRight, Plus, Trash2 } from 'lucide-react';
+import { X, MessageCircle, Sparkles, User, ShoppingBag, ArrowRight, Plus, Trash2, Shirt, Zap as ZapIcon } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface ShopItem {
@@ -116,7 +116,15 @@ export const ShopModal: React.FC<ShopModalProps> = ({ isOpen, onClose, selectedI
                     key={item.id} 
                     className="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/10 group"
                   >
-                    <img src={item.imageUrl} className="w-16 h-16 object-cover rounded-xl" alt={item.name} />
+                    <div className="w-16 h-16 bg-white/5 rounded-xl flex items-center justify-center">
+                      {item.category.toLowerCase().includes('apparel') || item.name.toLowerCase().includes('shirt') ? (
+                        <Shirt size={32} className="text-brand-primary opacity-50" />
+                      ) : item.category.toLowerCase().includes('instrument') ? (
+                        <ZapIcon size={32} className="text-brand-primary opacity-50" />
+                      ) : (
+                        <ShoppingBag size={32} className="text-brand-primary opacity-50" />
+                      )}
+                    </div>
                     <div className="flex-1 flex flex-col justify-center">
                       <div className="text-[10px] text-[var(--text-dim)] uppercase tracking-widest font-bold">{item.category}</div>
                       <div className="font-bold text-sm text-[var(--text-color)]">{item.name}</div>
@@ -179,7 +187,15 @@ export const ShopModal: React.FC<ShopModalProps> = ({ isOpen, onClose, selectedI
                   <div className="grid grid-cols-2 gap-4">
                     {upsellItems.map(item => (
                       <div key={item.id} className="p-3 bg-white/5 rounded-2xl border border-white/10 space-y-2 group relative">
-                        <img src={item.imageUrl} className="w-full aspect-square object-cover rounded-xl opacity-60 group-hover:opacity-100 transition-opacity" alt={item.name} />
+                        <div className="w-full aspect-square bg-white/5 rounded-xl flex items-center justify-center transition-opacity opacity-60 group-hover:opacity-100">
+                          {item.category.toLowerCase().includes('apparel') || item.name.toLowerCase().includes('shirt') ? (
+                            <Shirt size={24} className="text-brand-primary opacity-50" />
+                          ) : item.category.toLowerCase().includes('instrument') ? (
+                            <ZapIcon size={24} className="text-brand-primary opacity-50" />
+                          ) : (
+                            <ShoppingBag size={24} className="text-brand-primary opacity-50" />
+                          )}
+                        </div>
                         <div className="text-[10px] font-bold truncate text-[var(--text-color)]">{item.name}</div>
                         <div className="flex items-center justify-between">
                           <div className="text-[10px] text-brand-primary font-bold">{item.price}</div>

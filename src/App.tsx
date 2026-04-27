@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { NewsCard } from './components/NewsCard';
 import { ShopModal } from './components/ShopModal';
+import { RodaProgress } from './components/RodaProgress';
 import { MOCK_NEWS, MOCK_TRAININGS } from './constants';
 import { summarizeNews } from './lib/gemini';
-import { Sparkles, ChevronRight, Play, Trophy, Target, Zap, MapPin, MessageCircle, AlertCircle, Save, Trash2, Plus, X, ExternalLink, Palette, Home, ShoppingBag, Footprints, History } from 'lucide-react';
+import { Sparkles, ChevronRight, Play, Trophy, Target, Zap, MapPin, MessageCircle, AlertCircle, Save, Trash2, Plus, X, ExternalLink, Palette, Home, ShoppingBag, Footprints, History, Shirt } from 'lucide-react';
 import { Language, translations } from './translations';
 
 export default function App() {
@@ -43,15 +44,15 @@ export default function App() {
     try {
       const saved = localStorage.getItem('capoeira_locations');
       return saved ? JSON.parse(saved) : [
-        { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://maps.google.com' },
-        { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://maps.google.com' },
-        { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://maps.google.com' },
+        { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Kröllgasse+26,+1150+Wien' },
+        { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Währinger+Straße+59,+1090+Wien' },
+        { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Vorgartenstraße+95,+1200+Wien' },
       ];
     } catch {
       return [
-        { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://maps.google.com' },
-        { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://maps.google.com' },
-        { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://maps.google.com' },
+        { id: '1', name: 'Hauptakademie', addr: 'Kröllgasse 26, 1150 Wien', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Kröllgasse+26,+1150+Wien' },
+        { id: '2', name: 'WUK', addr: 'Währinger Straße 59, 1090 Wien', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Währinger+Straße+59,+1090+Wien' },
+        { id: '3', name: 'Vorgartenstraße', addr: 'Vorgartenstraße 95, 1200 Wien', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Vorgartenstraße+95,+1200+Wien' },
       ];
     }
   });
@@ -69,17 +70,17 @@ export default function App() {
     try {
       const saved = localStorage.getItem('capoeira_shop');
       return saved ? JSON.parse(saved) : [
-        { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Apparel' },
-        { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
-        { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
-        { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+        { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'input_file_2.png', category: 'Apparel' },
+        { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'input_file_2.png', category: 'Instruments' },
+        { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'input_file_2.png', category: 'Instruments' },
+        { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'input_file_2.png', category: 'Instruments' },
       ];
     } catch {
       return [
-        { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Apparel' },
-        { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
-        { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
-        { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'Instruments' },
+        { id: '1', name: 'Berimbau T-Shirt', price: '25€', imageUrl: 'input_file_2.png', category: 'Apparel' },
+        { id: '2', name: 'Berimbau Completo', price: '80€', imageUrl: 'input_file_2.png', category: 'Instruments' },
+        { id: '3', name: 'Pandeiro', price: '45€', imageUrl: 'input_file_2.png', category: 'Instruments' },
+        { id: '4', name: 'Atabaque', price: '250€', imageUrl: 'input_file_2.png', category: 'Instruments' },
       ];
     }
   });
@@ -101,10 +102,10 @@ export default function App() {
       secondaryColor: '#00D4FF',
       whatsappNumber: '+436601234567',
       instagramUrl: 'https://instagram.com/capoeirawien',
-      bgUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
+      bgUrl: 'mli_logo_wide.png',
       bgType: 'image',
-      bodyImageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
-      historyImageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png',
+      bodyImageUrl: 'ai_capoeira_ginga.png',
+      historyImageUrl: 'ai_capoeira_moves.png',
       urgentBanner: {
         text: 'Training heute entfällt wegen Feiertag!',
         active: false,
@@ -678,7 +679,7 @@ export default function App() {
                     <MessageCircle size={20} className="text-brand-primary" /> News Articles
                   </h3>
                   <button 
-                    onClick={() => setNews([{ id: Date.now().toString(), title: 'New Article', excerpt: 'Edit me...', category: 'Update', date: new Date().toISOString().split('T')[0], imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png' }, ...news])}
+                    onClick={() => setNews([{ id: Date.now().toString(), title: 'New Article', excerpt: 'Edit me...', category: 'Update', date: new Date().toISOString().split('T')[0], imageUrl: 'input_file_0.png' }, ...news])}
                     className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
                   >
                     <Plus size={16} /> Add News
@@ -741,7 +742,7 @@ export default function App() {
                     <Palette size={20} className="text-brand-primary" /> Shop Items
                   </h3>
                   <button 
-                    onClick={() => setShopItems([{ id: Date.now().toString(), name: 'New Item', price: '0€', imageUrl: 'https://capoeiravienna.at/wp-content/themes/capoeiravienna/images/header-logo.png', category: 'General' }, ...shopItems])}
+                    onClick={() => setShopItems([{ id: Date.now().toString(), name: 'New Item', price: '0€', imageUrl: 'input_file_2.png', category: 'General' }, ...shopItems])}
                     className="flex items-center gap-2 px-4 py-2 bg-brand-primary text-brand-dark rounded-xl text-xs font-bold uppercase tracking-widest"
                   >
                     <Plus size={16} /> Add Item
@@ -957,6 +958,28 @@ export default function App() {
                 <p className="text-xs text-[var(--text-dim)] uppercase tracking-widest font-bold">{t.training.overview}</p>
               </div>
 
+              {/* Kids Section for Parents */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                className="glass-card p-6 rounded-3xl space-y-4 border-l-4 border-brand-secondary bg-brand-secondary/5"
+              >
+                <div className="flex items-center gap-3 text-brand-secondary">
+                  <Target size={24} />
+                  <h3 className="text-xl font-bold">{t.training.kids_overview.title}</h3>
+                </div>
+                <p className="text-sm font-medium text-[var(--text-color)]">{t.training.kids_overview.subtitle}</p>
+                <p className="text-xs text-[var(--text-dim)] leading-relaxed">{t.training.kids_overview.info}</p>
+                <div className="flex gap-2 pt-2">
+                  <button 
+                    onClick={() => handleWhatsApp("Kindertraining Probetraining")}
+                    className="px-4 py-2 bg-brand-secondary text-brand-dark rounded-xl text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition-transform"
+                  >
+                    {t.contact.options[0].label}
+                  </button>
+                </div>
+              </motion.div>
+
               {/* Training Table */}
               <div className="overflow-x-auto -mx-6 px-6">
                 <div className="min-w-[600px] glass-card rounded-3xl overflow-hidden border border-white/10">
@@ -981,9 +1004,19 @@ export default function App() {
                             <div className="text-[10px] text-[var(--text-dim)]">{session.category} • {session.coach}</div>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
-                              <MapPin size={10} className="text-brand-primary" />
-                              {session.location.split(',')[0]}
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-1 text-[10px] text-[var(--text-color)] font-medium">
+                                <MapPin size={10} className="text-brand-primary" />
+                                {session.location}
+                              </div>
+                              <a 
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(session.location)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[8px] text-brand-secondary hover:underline flex items-center gap-1 font-bold text-left uppercase"
+                              >
+                                <ExternalLink size={8} /> {language === 'DE' ? 'Karte öffnen' : language === 'PT' ? 'Abrir mapa' : 'Open map'}
+                              </a>
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -1027,47 +1060,49 @@ export default function App() {
         </motion.div>
 
         <div className="space-y-6">
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold text-brand-primary">{t.history.groupTitle}</h3>
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold text-brand-primary uppercase tracking-tighter">{t.history.groupTitle}</h3>
+            <p className="text-sm text-[var(--text-color)] leading-relaxed">
               {t.history.groupDescription}
+            </p>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+              {t.history.viennaHistory}
             </p>
           </div>
 
-          {/* Horizontal Categories for History */}
-          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
-            {t.history.categories?.map((cat: any) => (
-              <div key={cat.id} className="min-w-[240px] glass-card p-6 rounded-3xl space-y-2 border-l-4 border-brand-primary">
-                <h4 className="font-bold text-brand-primary">{cat.title}</h4>
-                <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{cat.desc}</p>
-              </div>
-            ))}
+          <div className="glass-card p-6 rounded-3xl bg-brand-primary/5 border-l-4 border-brand-primary">
+            <p className="text-sm text-[var(--text-color)] leading-relaxed font-medium">
+              {t.history.philosophy}
+            </p>
           </div>
-        </div>
 
-        {/* Horizontal Timeline */}
-        <div className="space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-[var(--text-dim)]">Timeline</h4>
-          <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
-            {t.history.timeline.map((item: any, i: number) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.1 }}
-                className="min-w-[200px] glass-card p-6 rounded-3xl space-y-2 border-t-2 border-brand-primary"
-              >
-                <div className="text-2xl font-display font-bold text-brand-primary">{item.year}</div>
-                <div className="text-xs text-[var(--text-color)] leading-tight">{item.event}</div>
-              </motion.div>
-            ))}
+          {/* International Exchange */}
+          <div className="space-y-4 pt-4 border-t border-white/5">
+            <h4 className="text-lg font-bold text-brand-secondary flex items-center gap-2">
+              <Sparkles size={18} /> {t.history.exchange.title}
+            </h4>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+              {t.history.exchange.content}
+            </p>
           </div>
-        </div>
 
-        <div className="glass-card p-6 rounded-3xl bg-brand-primary/5">
-          <p className="text-sm text-[var(--text-muted)] leading-relaxed italic">
-            {t.history.focus}
-          </p>
+          {/* worldwide */}
+          <div className="space-y-4 pt-4 border-t border-white/5">
+            <h4 className="text-lg font-bold text-brand-primary flex items-center gap-2">
+              <MapPin size={18} /> {t.history.worldwide.title}
+            </h4>
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+              {t.history.worldwide.content}
+            </p>
+            <div className="grid gap-3 pt-2">
+              {t.history.worldwide.locations.map((loc: any, i: number) => (
+                <div key={i} className="glass-card p-4 rounded-2xl border border-white/5">
+                  <div className="text-xs font-bold text-brand-primary uppercase tracking-widest">{loc.city}</div>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-1">{loc.info}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -1124,11 +1159,13 @@ export default function App() {
             whileInView={{ opacity: 1, scale: 1 }}
             className="min-w-[280px] glass-card p-6 rounded-3xl space-y-4"
           >
-            <h3 className="text-xl font-bold text-brand-primary">Das Berimbau</h3>
+            <h3 className="text-xl font-bold text-brand-primary">{language === 'DE' ? 'Das Berimbau' : language === 'PT' ? 'O Berimbau' : 'The Berimbau'}</h3>
             <p className="text-sm text-[var(--text-muted)] leading-relaxed">
               {language === 'DE' ?
                 'Das wichtigste Instrument in der Roda. Es bestimmt den Rhythmus, die Geschwindigkeit und den Stil des Spiels.' :
-                'O instrumento mais importante da roda. Ele determina o ritmo, a velocidade e o estilo do jogo.'
+                language === 'PT' ?
+                'O instrumento mais importante da roda. Ele determina o ritmo, a velocidade e o estilo do jogo.' :
+                'The most important instrument in the Roda. It determines the rhythm, speed, and style of the game.'
               }
             </p>
           </motion.div>
@@ -1165,58 +1202,54 @@ export default function App() {
             {t.belts.description}
           </p>
 
-          {/* Group Info Tiles in Belts Section */}
+          {/* Horizontal Scrolling Cord system */}
           <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar -mx-6 px-6">
-            <div className="min-w-[280px] glass-card p-6 rounded-3xl space-y-3 border-t-4 border-brand-primary">
-              <div className="flex items-center gap-2 text-brand-primary">
-                <History size={18} />
-                <h4 className="font-bold uppercase tracking-widest text-xs">Meia Lua Inteira</h4>
-              </div>
-              <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
-                {t.history.groupDescription}
-              </p>
-            </div>
-            <div className="min-w-[280px] glass-card p-6 rounded-3xl space-y-3 border-t-4 border-brand-secondary">
-              <div className="flex items-center gap-2 text-brand-secondary">
-                <Footprints size={18} />
-                <h4 className="font-bold uppercase tracking-widest text-xs">Training & Fokus</h4>
-              </div>
-              <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
-                {t.history.focus}
-              </p>
-            </div>
+            {belts.map((level: any, i: number) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.05 }}
+                className="min-w-[200px] glass-card p-6 rounded-3xl flex flex-col items-center gap-4 group hover:border-brand-primary/50 transition-all border-t-4 border-brand-primary"
+              >
+                {/* Belt Visual */}
+                <div className="relative w-full h-12 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-white/5 rounded-xl border border-white/10" />
+                  <div className="relative w-[80%] h-4 rounded-full overflow-hidden flex shadow-inner border border-black/20">
+                    <div className={`flex-1 h-full ${
+                      level.color.toLowerCase().includes('crua') || level.color.toLowerCase().includes('weiß') ? 'bg-white' :
+                      level.color.toLowerCase().includes('amarela') || level.color.toLowerCase().includes('gelb') ? 'bg-yellow-400' :
+                      level.color.toLowerCase().includes('laranja') || level.color.toLowerCase().includes('orange') ? 'bg-orange-500' :
+                      level.color.toLowerCase().includes('azul') || level.color.toLowerCase().includes('blau') ? 'bg-blue-600' :
+                      level.color.toLowerCase().includes('verde') || level.color.toLowerCase().includes('grün') ? 'bg-green-600' :
+                      level.color.toLowerCase().includes('roxa') || level.color.toLowerCase().includes('violett') ? 'bg-purple-600' :
+                      level.color.toLowerCase().includes('marrom') || level.color.toLowerCase().includes('braun') ? 'bg-amber-900' :
+                      level.color.toLowerCase().includes('vermelha') || level.color.toLowerCase().includes('rot') ? 'bg-red-600' : 'bg-gray-400'
+                    }`} />
+                    {/* Handles bicolor belts */}
+                    {level.color.includes('-') && (
+                      <div className={`flex-1 h-full ${
+                        level.color.split('-')[1].toLowerCase().includes('amarela') || level.color.split('-')[1].toLowerCase().includes('gelb') ? 'bg-yellow-400' :
+                        level.color.split('-')[1].toLowerCase().includes('laranja') || level.color.split('-')[1].toLowerCase().includes('orange') ? 'bg-orange-500' :
+                        level.color.split('-')[1].toLowerCase().includes('azul') || level.color.split('-')[1].toLowerCase().includes('blau') ? 'bg-blue-600' :
+                        level.color.split('-')[1].toLowerCase().includes('verde') || level.color.split('-')[1].toLowerCase().includes('grün') ? 'bg-green-600' :
+                        level.color.split('-')[1].toLowerCase().includes('roxa') || level.color.split('-')[1].toLowerCase().includes('violett') ? 'bg-purple-600' :
+                        level.color.split('-')[1].toLowerCase().includes('marrom') || level.color.split('-')[1].toLowerCase().includes('braun') ? 'bg-amber-900' :
+                        level.color.split('-')[1].toLowerCase().includes('vermelha') || level.color.split('-')[1].toLowerCase().includes('rot') ? 'bg-red-600' : 'bg-gray-400'
+                      }`} />
+                    )}
+                  </div>
+                  {/* Tassels/Knots simulation */}
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-6 border-l-2 border-white/20" />
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-xs font-bold text-[var(--text-color)]">{level.color}</div>
+                  <div className="text-[10px] text-[var(--text-dim)] uppercase tracking-widest font-bold mt-1">{level.meaning}</div>
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </div>
-
-        <div className="space-y-3">
-          {belts.map((level: any, i: number) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="glass-card p-4 rounded-2xl flex items-center gap-4 group hover:border-brand-primary/50 transition-all"
-            >
-              <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/5 border border-white/10 group-hover:bg-brand-primary/10 transition-colors">
-                <span className="text-xs font-bold text-brand-primary">{i + 1}</span>
-              </div>
-              <div className="flex-1">
-                <div className="text-sm font-bold text-[var(--text-color)]">{level.color}</div>
-                <div className="text-[10px] text-[var(--text-dim)] uppercase tracking-widest font-bold">{level.meaning}</div>
-              </div>
-              <div className="w-12 h-2 rounded-full overflow-hidden flex border border-white/10">
-                {/* Simple color preview logic based on name */}
-                {level.color.toLowerCase().includes('crua') || level.color.toLowerCase().includes('weiß') ? <div className="flex-1 bg-white" /> : null}
-                {level.color.toLowerCase().includes('amarela') || level.color.toLowerCase().includes('gelb') ? <div className="flex-1 bg-yellow-400" /> : null}
-                {level.color.toLowerCase().includes('laranja') || level.color.toLowerCase().includes('orange') ? <div className="flex-1 bg-orange-500" /> : null}
-                {level.color.toLowerCase().includes('azul') || level.color.toLowerCase().includes('blau') ? <div className="flex-1 bg-blue-600" /> : null}
-                {level.color.toLowerCase().includes('verde') || level.color.toLowerCase().includes('grün') ? <div className="flex-1 bg-green-600" /> : null}
-                {level.color.toLowerCase().includes('roxa') || level.color.toLowerCase().includes('violett') ? <div className="flex-1 bg-purple-600" /> : null}
-                {level.color.toLowerCase().includes('marrom') || level.color.toLowerCase().includes('braun') ? <div className="flex-1 bg-amber-900" /> : null}
-                {level.color.toLowerCase().includes('vermelha') || level.color.toLowerCase().includes('rot') ? <div className="flex-1 bg-red-600" /> : null}
-              </div>
-            </motion.div>
-          ))}
         </div>
       </section>
 
@@ -1234,19 +1267,20 @@ export default function App() {
               whileHover={{ y: -5 }}
               className="glass-card rounded-3xl overflow-hidden flex flex-col"
             >
-              <div className="aspect-square relative">
-                <img 
-                  src={item.imageUrl} 
-                  alt={item.name} 
-                  className="w-full h-full object-cover opacity-80"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute top-3 right-3 px-2 py-1 bg-brand-primary text-brand-dark text-[10px] font-bold rounded-lg">
+              <div className="aspect-square relative bg-white/5 flex items-center justify-center p-8">
+                {item.category.toLowerCase().includes('apparel') || item.name.toLowerCase().includes('shirt') ? (
+                  <Shirt size={48} className="text-brand-primary opacity-50" />
+                ) : item.category.toLowerCase().includes('instrument') ? (
+                  <Zap size={48} className="text-brand-primary opacity-50" />
+                ) : (
+                  <ShoppingBag size={48} className="text-brand-primary opacity-50" />
+                )}
+                <div className="absolute top-3 right-3 px-2 py-1 bg-brand-primary text-brand-dark text-[10px] font-bold rounded-lg shadow-lg">
                   {item.price}
                 </div>
               </div>
               <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="font-bold text-sm leading-tight">{item.name}</div>
+                <div className="font-bold text-sm leading-tight text-[var(--text-color)]">{item.name}</div>
                 <button 
                   onClick={() => handleShopOrder(item)}
                   className="w-full py-2 bg-brand-primary/10 text-brand-primary rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-brand-primary hover:text-brand-dark transition-all flex items-center justify-center gap-2"
@@ -1351,18 +1385,17 @@ export default function App() {
         {[
           { name: t.nav.home, href: '#home', icon: Home },
           { name: 'News', href: '#news', icon: Zap },
-          { name: 'Shop', href: '#shop', icon: ShoppingBag },
-          { name: 'Team', href: '#team', icon: Trophy },
-          { name: 'Plan', href: '#training', icon: Footprints },
-          { name: 'Orte', href: '#locations', icon: MapPin }
+          { name: t.nav.shop, href: '#shop', icon: ShoppingBag },
+          { name: t.nav.training, href: '#training', icon: Footprints },
+          { name: t.nav.locations, href: '#locations', icon: MapPin }
         ].map((item, i) => (
           <button 
             key={i} 
             onClick={() => handleNavigate(item.href)}
             className="flex flex-col items-center gap-1 group"
           >
-            <item.icon size={18} className={`transition-all ${i === 0 ? 'text-brand-primary' : 'text-[var(--text-dim)] group-hover:text-brand-primary'}`} />
-            <span className={`text-[8px] font-bold uppercase tracking-widest ${i === 0 ? 'text-[var(--text-color)]' : 'text-[var(--text-dim)]'}`}>
+            <item.icon size={18} className="text-[var(--text-dim)] group-hover:text-brand-primary transition-colors" />
+            <span className="text-[8px] font-bold uppercase tracking-widest text-[var(--text-muted)] group-hover:text-[var(--text-color)] transition-colors line-clamp-1 text-center px-1">
               {item.name}
             </span>
           </button>
@@ -1377,6 +1410,8 @@ export default function App() {
         whatsappNumber={settings.whatsappNumber}
         language={language}
       />
+
+      <RodaProgress language={language} translations={t} />
     </div>
   );
 }
